@@ -283,8 +283,8 @@ if [[ $CPU != "aarch64" ]] && [[ $edge == 1 ]]; then
   mkdir -p $edge_dir
   cd $edge_dir
   if [[ $nocmake == 0 ]]; then
-    echo "$CMAKE -DRDI_CCACHE=$ccache -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../src"
-    time env XRT_NATIVE_BUILD=no $CMAKE -DRDI_CCACHE=$ccache -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../src
+    echo "$CMAKE ${CMAKE_ARGS} -DRDI_CCACHE=$ccache -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../src"
+    time env XRT_NATIVE_BUILD=no $CMAKE ${CMAKE_ARGS} -DRDI_CCACHE=$ccache -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../../src
   fi
   echo "make -j $jcore $verbose DESTDIR=$PWD"
   time make -j $jcore $verbose DESTDIR=$PWD
