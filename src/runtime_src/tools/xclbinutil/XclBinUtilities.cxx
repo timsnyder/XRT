@@ -14,6 +14,8 @@
  * under the License.
  */
 
+#define __STDC_FORMAT_MACROS
+
 #include "XclBinUtilities.h"
 
 #include "Section.h"                           // TODO: REMOVE SECTION INCLUDE
