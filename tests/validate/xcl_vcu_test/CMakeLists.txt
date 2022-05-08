@@ -19,7 +19,7 @@ target_link_libraries(${TESTNAME} PRIVATE ${xrt_coreutil_LIBRARY} ${xrt_core_LIB
 add_definitions( -Wno-narrowing )
 
 if (NOT WIN32)
-  target_link_libraries(${TESTNAME} PRIVATE ${uuid_LIBRARY} pthread ${OpenCL_LIBRARY} )
+  target_link_libraries(${TESTNAME} PRIVATE ${uuid_LIBRARY} pthread ${OpenCL_LIBRARY} rt )
 endif(NOT WIN32)
 
 if (NOT DEFINED XRT_VALIDATE_DIR)
