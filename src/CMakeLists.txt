@@ -39,6 +39,7 @@ set (CMAKE_INSTALL_PREFIX "/opt/xilinx")
 if (${XRT_NATIVE_BUILD} STREQUAL "no")
   set (CMAKE_INSTALL_PREFIX "/usr")
 endif()
+message("-- Install Prefix is ${CMAKE_INSTALL_PREFIX}")
 
 # Default component name for any install() command without the COMPONENT argument
 # The default component is the xrt run-time component, if XRT_DEV_COMPONENT is

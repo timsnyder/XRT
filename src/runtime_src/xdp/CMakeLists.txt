@@ -404,7 +404,7 @@ install (FILES "${XRT_XDP_PROFILE_XMA_PLUGIN_DIR}/xma_profile.h"
 
 # Only install these files for PCIe device for now, which is .
 if (${XRT_NATIVE_BUILD} STREQUAL "yes")
-set (APPDEBUG_INSTALL_PREFIX "/opt/xilinx/xrt/share/appdebug")
+set (APPDEBUG_INSTALL_PREFIX "share/xrt/appdebug")
 install (FILES
   ${XRT_XDP_APPDEBUG_DIR}/appdebug.py
   ${XRT_XDP_APPDEBUG_DIR}/appdebugint.py

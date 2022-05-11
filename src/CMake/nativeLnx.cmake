@@ -110,13 +110,19 @@ add_compile_options("-DBOOST_LOCALE_HIDE_AUTO_PTR")
 INCLUDE (FindCurses)
 find_package(Curses REQUIRED)
 
+# --- Python ---
+INCLUDE (FindPython)
+find_package(Python REQUIRED)
+
 # --- XRT Variables ---
-set (XRT_INSTALL_DIR           "xrt")
+# install() will be relative to CMAKE_INSTALL_PREFIX for any relative path
+# provide dot so that it doesn't put everything in a sub-prefix.  conda doesn't roll that way
+set (XRT_INSTALL_DIR           ".") 
 set (XRT_INSTALL_BIN_DIR       "${XRT_INSTALL_DIR}/bin")
 set (XRT_INSTALL_UNWRAPPED_DIR "${XRT_INSTALL_BIN_DIR}/unwrapped")
 set (XRT_INSTALL_INCLUDE_DIR   "${XRT_INSTALL_DIR}/include")
 set (XRT_INSTALL_LIB_DIR       "${XRT_INSTALL_DIR}/lib${LIB_SUFFIX}")
-set (XRT_INSTALL_PYTHON_DIR    "${XRT_INSTALL_DIR}/python")
+set (XRT_INSTALL_PYTHON_DIR    "${PYTHON_SITEARCH}")
 set (XRT_VALIDATE_DIR          "${XRT_INSTALL_DIR}/test")
 set (XRT_NAMELINK_ONLY NAMELINK_ONLY)
 set (XRT_NAMELINK_SKIP NAMELINK_SKIP)
@@ -155,14 +161,14 @@ add_subdirectory(runtime_src)
 
 #XMA settings START
 set(XMA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-set(XMA_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/xrt")
+set(XMA_INSTALL_DIR ".")
 set(XMA_VERSION_STRING ${XRT_VERSION_MAJOR}.${XRT_VERSION_MINOR}.${XRT_VERSION_PATCH})
 set(XMA_SOVERSION ${XRT_SOVERSION})
 add_subdirectory(xma)
 #XMA settings END
 
 # --- Python bindings ---
-set(PY_INSTALL_DIR "${XRT_INSTALL_DIR}/python")
+set(PY_INSTALL_DIR "${PYTHON_ARCHLIB}")
 add_subdirectory(python)
 
 # --- Python tests ---
@@ -193,7 +199,7 @@ include (CMake/dkms-container.cmake)
 include (CMake/icd.cmake)
 
 # --- Change Log ---
-include (CMake/changelog.cmake)
+#include (CMake/changelog.cmake)
 
 # --- Package Config ---
 include (CMake/pkgconfig.cmake)

@@ -7,6 +7,8 @@ configure_file (
   ${ICD_FILE_NAME}
   )
 
-set(OCL_ICD_INSTALL_PREFIX "/etc/OpenCL/vendors")
+# the intel-opencl-rt repackage puts the .ocl file in this directory
+# relative to CMAKE_INSTALL_PREFIX
+set(OCL_ICD_INSTALL_PREFIX "etc/OpenCL/vendors")
 
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${ICD_FILE_NAME} DESTINATION ${OCL_ICD_INSTALL_PREFIX})
