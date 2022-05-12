@@ -13,7 +13,7 @@ file(GLOB XBFLASH_QSPI_FILES
 set(XBFLASH_QSPI_SRC ${XBFLASH_QSPI_FILES})
 set(XBFLASH_NAME "xbflash.qspi")
 set(XBFLASH_NAME_NEW "xbflash")
-set(XBFLASH_INSTALL_DEST "/usr/local/bin")
+set(XBFLASH_INSTALL_DEST "bin")
 set(XBFLASH_COMPONENT "xbflash")
 
 add_executable(${XBFLASH_NAME} ${XBFLASH_QSPI_SRC})
