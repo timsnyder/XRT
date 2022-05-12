@@ -62,6 +62,6 @@ endif()
 # This is not required on MPSoC platform. To avoid yocto error, do NOT intall
 if ((${XRT_NATIVE_BUILD} STREQUAL "yes") AND (NOT WIN32))
   # Copied over from dkms.cmake. TODO: cleanup
-  set (XRT_DKMS_INSTALL_DIR "/usr/src/xrt-${XRT_VERSION_STRING}")
+  set (XRT_DKMS_INSTALL_DIR "src/xrt-${XRT_VERSION_STRING}")
   install(FILES ${CMAKE_BINARY_DIR}/gen/version.h DESTINATION ${XRT_DKMS_INSTALL_DIR}/driver/include)
 endif()
