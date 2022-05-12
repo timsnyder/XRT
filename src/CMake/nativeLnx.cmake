@@ -111,8 +111,21 @@ INCLUDE (FindCurses)
 find_package(Curses REQUIRED)
 
 # --- Python ---
-INCLUDE (FindPython)
-find_package(Python REQUIRED)
+# FindPython has the same issue as PythonInterp mentioned in runtime_src/tools/xclbinutil/CMakeLists.txt
+# where it seems to break the way pybind11 is looked up.  So, we avoid it and instead manually run PYTHON_EXECUTABLE
+# and ask it where site-packages is
+#INCLUDE (FindPython)
+#find_package(Python REQUIRED)
+
+execute_process (COMMAND ${PYTHON_EXECUTABLE} -c "import site; sp=site.getsitepackages(); assert len(sp) == 1, f'site packages has len {len(sp)} != 1'; print(sp[0])"
+                       RESULT_VARIABLE _result
+                       OUTPUT_VARIABLE XRT_INSTALL_PYTHON_DIR
+                       ERROR_QUIET
+                       OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (_result)
+    message(FATAL_ERROR "non-zero exit when looking for site-packages. got ${XRT_INSTALL_PYTHON_DIR}")
+endif()
+
 
 # --- XRT Variables ---
 # install() will be relative to CMAKE_INSTALL_PREFIX for any relative path
@@ -122,7 +135,7 @@ set (XRT_INSTALL_BIN_DIR       "${XRT_INSTALL_DIR}/bin")
 set (XRT_INSTALL_UNWRAPPED_DIR "${XRT_INSTALL_BIN_DIR}/unwrapped")
 set (XRT_INSTALL_INCLUDE_DIR   "${XRT_INSTALL_DIR}/include")
 set (XRT_INSTALL_LIB_DIR       "${XRT_INSTALL_DIR}/lib${LIB_SUFFIX}")
-set (XRT_INSTALL_PYTHON_DIR    "${PYTHON_SITEARCH}")
+#set (XRT_INSTALL_PYTHON_DIR    "${PYTHON_SITEARCH}")
 set (XRT_VALIDATE_DIR          "${XRT_INSTALL_DIR}/test")
 set (XRT_NAMELINK_ONLY NAMELINK_ONLY)
 set (XRT_NAMELINK_SKIP NAMELINK_SKIP)
@@ -168,7 +181,7 @@ add_subdirectory(xma)
 #XMA settings END
 
 # --- Python bindings ---
-set(PY_INSTALL_DIR "${PYTHON_ARCHLIB}")
+set(PY_INSTALL_DIR "${XRT_INSTALL_PYTHON_DIR}")
 add_subdirectory(python)
 
 # --- Python tests ---
