@@ -28,7 +28,7 @@ function(xrt_util_create_unittest_wrapper TEST_DIRECTORY TEST_COMMAND WRAPPER_FI
   if(BASH)
     set(RUN_BASE_EXECUTABLE "${RUN_BASE_NAME}.sh")
     set(RUN_BASE_WRAPPER_FILE "testBashWrapper.sh.in")
-    set(SETUP_SCRIPT "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}/${XRT_INSTALL_DIR}/setup.sh")
+    set(SETUP_SCRIPT "$(mktemp)")
   else()
     if(WIN32)
       set(RUN_BASE_EXECUTABLE "${RUN_BASE_NAME}.bat")
