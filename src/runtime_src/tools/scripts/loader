@@ -37,21 +37,36 @@ if [ ! -f "${XRT_PROG_UNWRAPPED}" ]; then
   exit 1
 fi
 
-# -- Find the setup script and configure environment
-XRT_SETUP_SCRIPT="`dirname \"$0\"`/../../setup.sh"
 
-if [ ! -f "$XRT_SETUP_SCRIPT" ]; then
-  echo "ERROR: Could not find XRT setup script."
-  echo "ERROR: ${XRT_SETUP_SCRIPT} does not exist"
-  exit 1
+## -- Find the setup script and configure environment
+#XRT_SETUP_SCRIPT="`dirname \"$0\"`/../../setup.sh"
+#
+#if [ ! -f "$XRT_SETUP_SCRIPT" ]; then
+#  echo "ERROR: Could not find XRT setup script."
+#  echo "ERROR: ${XRT_SETUP_SCRIPT} does not exist"
+#  exit 1
+#fi
+#
+#. "${XRT_SETUP_SCRIPT}" > /dev/null
+
+# -- Under conda, we don't use setup.sh, activation script sets XILINX_XRT=$CONDA_PREFIX when
+#    the environment is activated.  Let's just make sure that it is still set pointing to the
+#    environment where the loader is being used
+
+#                      CONDA_PREFIX/ bin     / unwrapped / loader
+if [[ "$XILINX_XRT" != "$(dirname $(dirname $(dirname $0)))" ]]; then
+   echo "WARNING: Something has changed XILINX_XRT: '$XILINX_XRT'"
+   echo "WARNING: Setting XILINX_XRT back to: '$(dirname $(dirname $(dirname $0)))'"
+   export XILINX_XRT="$(dirname $(dirname $(dirname $0)))"
 fi
-
-. "${XRT_SETUP_SCRIPT}" > /dev/null
 
 # XRT uses system librairies whereas Vitis and Vivado ship there own.
 # when XRT tools are invoked from Vitis/Vivado the LD_LIBRARY_PATH will be set to use libraries shipped with Vitis/vivado
 # so we reset the LD_LIBRARY_PATH to make XRT tool select the correct libraries.
-LD_LIBRARY_PATH=$XILINX_XRT/lib:$(echo $LD_LIBRARY_PATH | tr ':' '\n' | grep -E -v "/(Vitis|Vivado).*/(lnx|lin)" | tr '\n' ':')
+#LD_LIBRARY_PATH=$XILINX_XRT/lib:$(echo $LD_LIBRARY_PATH | tr ':' '\n' | grep -E -v "/(Vitis|Vivado).*/(lnx|lin)" | tr '\n' ':')
+
+# nope.  conda-forge (and Anaconda) explicitly use old style RPATH instead of RUNPATH so that LD_LIBRARY_PATH can't mess with dynamic linkage
+# we've built stuff correctly and don't use LD_LIBRARY_PATH.  We could unset it here but instead we ignore it because it can't hurt us.
 
 # -- Execute the wrapped program
 "${XRT_PROG_UNWRAPPED}" "${XRT_LOADER_ARGS[@]}"
