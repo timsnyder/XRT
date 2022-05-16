@@ -1,5 +1,5 @@
-set(ERT_INSTALL_PREFIX "/opt/xilinx/xrt/share/fw")
-set(ERT_INSTALL_FIRMWARE_PREFIX "/lib/firmware/xilinx")
+set(ERT_INSTALL_PREFIX "share/xrt/fw")
+set(ERT_INSTALL_FIRMWARE_PREFIX "lib/firmware/xilinx")
 
 if ((EXISTS $ENV{XILINX_VITIS}/gnu/microblaze) AND (${XRT_NATIVE_BUILD} STREQUAL "yes") AND (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64"))
 
