@@ -40,9 +40,8 @@
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 
-// Do *not* include cl_ext.h from this directory
 #ifndef _WIN32
-# include_next <CL/cl_ext.h>
+# include <CL/cl_ext.h>
 #else
 # pragma warning( push )
 # pragma warning( disable : 4201 )

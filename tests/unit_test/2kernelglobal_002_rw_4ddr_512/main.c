@@ -22,7 +22,7 @@
 #include <cmath>
 #include <chrono>
 #include <CL/opencl.h>
-#include <CL/cl_ext.h>
+#include <CL/cl_ext_xilinx.h>
 
 //pointer access pipeline loop
 #define PIPELINELOOP                        2

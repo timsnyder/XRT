@@ -112,7 +112,6 @@ install(TARGETS xilinxopencl xilinxopencl_static
 # Release OpenCL extension headers
 install (FILES
   ${XRT_SRC_DIR}/include/1_2/CL/cl_ext_xilinx.h
-  ${XRT_SRC_DIR}/include/1_2/CL/cl_ext.h
   ${XRT_SRC_DIR}/include/1_2/CL/cl2xrt.hpp
   DESTINATION ${XRT_INSTALL_INCLUDE_DIR}/CL
   COMPONENT ${XRT_DEV_COMPONENT}

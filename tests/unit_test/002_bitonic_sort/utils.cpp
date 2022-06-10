@@ -20,7 +20,7 @@
 #include <memory.h>
 //#include <windows.h>
 #include "CL/cl.h"
-#include "CL/cl_ext.h"
+#include "CL/cl_ext_xilinx.h"
 #include "utils.h"
 #include <assert.h>
 
