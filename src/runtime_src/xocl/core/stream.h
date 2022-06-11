@@ -23,6 +23,8 @@
 
 #include "xrt/device/device.h"
 
+#include <CL/cl_ext_xilinx.h>
+
 namespace xocl {
 //class stream for qdma and other streaming purposes.
 class stream : public _cl_stream // TODO: public refcount

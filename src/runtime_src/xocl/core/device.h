@@ -26,6 +26,7 @@
 #include "core/common/unistd.h"
 #include "core/common/scope_guard.h"
 
+#include <CL/cl_ext_xilinx.h>
 #include <cassert>
 
 namespace xocl {

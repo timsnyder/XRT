@@ -28,6 +28,7 @@
 #include "core/common/api/bo.h"
 #include "core/include/experimental/xrt_bo.h"
 
+#include <CL/cl_ext_xilinx.h>
 #include <map>
 
 #ifdef _WIN32
