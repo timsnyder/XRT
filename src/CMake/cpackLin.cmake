@@ -28,6 +28,40 @@ endif()
 
 include (CMake/glibc.cmake)
 
+# Modify the package name for the xrt runtime and development component
+# Syntax is set(CPACK_<GENERATOR>_<COMPONENT>_PACKAGE_NAME "<name">)
+SET(CPACK_DEBIAN_XRT_PACKAGE_NAME "xrt")
+
+SET(CPACK_DEBIAN_XRT_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/prerm")
+SET(CPACK_DEBIAN_AWS_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/aws/postinst;${CMAKE_CURRENT_BINARY_DIR}/aws/prerm")
+SET(CPACK_DEBIAN_AZURE_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/azure/postinst;${CMAKE_CURRENT_BINARY_DIR}/azure/prerm")
+SET(CPACK_DEBIAN_CONTAINER_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/container/postinst;${CMAKE_CURRENT_BINARY_DIR}/container/prerm")
+
+SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS "yes")
+
+if( (${CMAKE_VERSION} VERSION_LESS "3.6.0") AND (${CPACK_DEBIAN_PACKAGE_SHLIBDEPS} STREQUAL "yes") )
+# Fix bug in CPackDeb.cmake in use of dpkg-shlibdeps
+SET(CMAKE_MODULE_PATH ${XRT_SRC_DIR}/CMake/patch ${CMAKE_MODULE_PATH})
+endif()
+
+SET(CPACK_DEBIAN_AWS_PACKAGE_DEPENDS "xrt (>= ${XRT_VERSION_MAJOR}.${XRT_VERSION_MINOR}.${XRT_VERSION_PATCH})")
+SET(CPACK_DEBIAN_XRT_PACKAGE_DEPENDS "ocl-icd-libopencl1 (>= 2.2.0), lsb-release, dkms (>= 2.2.0), udev, python3")
+
+if (${XRT_DEV_COMPONENT} STREQUAL "xrt")
+# applications link with -luuid
+SET(CPACK_DEBIAN_XRT_PACKAGE_DEPENDS
+  "${CPACK_DEBIAN_XRT_PACKAGE_DEPENDS},  \
+  ocl-icd-opencl-dev (>= 2.2.0), \
+  uuid-dev (>= 2.27.1)")
+else()
+# xrt development package
+SET(CPACK_DEBIAN_XRT-DEV_PACKAGE_NAME ${XRT_DEV_COMPONENT})
+SET(CPACK_DEBIAN_XRT-DEV_PACKAGE_DEPENDS 
+  "xrt (>= ${XRT_VERSION_MAJOR}.${XRT_VERSION_MINOR}.${XRT_VERSION_PATCH}), \
+  ocl-icd-opencl-dev (>= 2.2.0), \
+  uuid-dev (>= 2.27.1)")
+endif()
+
 SET(PACKAGE_KIND "TGZ")
 if (${LINUX_FLAVOR} MATCHES "^(Ubuntu|Debian)")
   execute_process(
@@ -38,39 +72,6 @@ if (${LINUX_FLAVOR} MATCHES "^(Ubuntu|Debian)")
 
   SET(CPACK_GENERATOR "DEB;TGZ")
   SET(PACKAGE_KIND "DEB")
-  # Modify the package name for the xrt runtime and development component
-  # Syntax is set(CPACK_<GENERATOR>_<COMPONENT>_PACKAGE_NAME "<name">)
-  SET(CPACK_DEBIAN_XRT_PACKAGE_NAME "xrt")
-
-  SET(CPACK_DEBIAN_XRT_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/postinst;${CMAKE_CURRENT_BINARY_DIR}/prerm")
-  SET(CPACK_DEBIAN_AWS_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/aws/postinst;${CMAKE_CURRENT_BINARY_DIR}/aws/prerm")
-  SET(CPACK_DEBIAN_AZURE_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/azure/postinst;${CMAKE_CURRENT_BINARY_DIR}/azure/prerm")
-  SET(CPACK_DEBIAN_CONTAINER_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_BINARY_DIR}/container/postinst;${CMAKE_CURRENT_BINARY_DIR}/container/prerm")
-
-  SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS "yes")
-
-  if( (${CMAKE_VERSION} VERSION_LESS "3.6.0") AND (${CPACK_DEBIAN_PACKAGE_SHLIBDEPS} STREQUAL "yes") )
-    # Fix bug in CPackDeb.cmake in use of dpkg-shlibdeps
-    SET(CMAKE_MODULE_PATH ${XRT_SRC_DIR}/CMake/patch ${CMAKE_MODULE_PATH})
-  endif()
-
-  SET(CPACK_DEBIAN_AWS_PACKAGE_DEPENDS "xrt (>= ${XRT_VERSION_MAJOR}.${XRT_VERSION_MINOR}.${XRT_VERSION_PATCH})")
-  SET(CPACK_DEBIAN_XRT_PACKAGE_DEPENDS "ocl-icd-libopencl1 (>= 2.2.0), lsb-release, dkms (>= 2.2.0), udev, python3")
-
-  if (${XRT_DEV_COMPONENT} STREQUAL "xrt")
-    # applications link with -luuid
-    SET(CPACK_DEBIAN_XRT_PACKAGE_DEPENDS
-      "${CPACK_DEBIAN_XRT_PACKAGE_DEPENDS},  \
-      ocl-icd-opencl-dev (>= 2.2.0), \
-      uuid-dev (>= 2.27.1)")
-  else()
-    # xrt development package
-    SET(CPACK_DEBIAN_XRT-DEV_PACKAGE_NAME ${XRT_DEV_COMPONENT})
-    SET(CPACK_DEBIAN_XRT-DEV_PACKAGE_DEPENDS 
-      "xrt (>= ${XRT_VERSION_MAJOR}.${XRT_VERSION_MINOR}.${XRT_VERSION_PATCH}), \
-      ocl-icd-opencl-dev (>= 2.2.0), \
-      uuid-dev (>= 2.27.1)")
-  endif()
 
   if (DEFINED CROSS_COMPILE)
     if (${aarch} STREQUAL "aarch64")
@@ -96,7 +97,10 @@ elseif (${LINUX_FLAVOR} MATCHES "^(RedHat|CentOS|Amazon|Fedora|SUSE)")
     set(CPACK_RPM_PACKAGE_ARCHITECTURE "mips64el")
   endif()
 
-  SET(CPACK_GENERATOR "RPM;TGZ")
+  set(CPACK_RPM_XRT_PACKAGE_ARCHITECTURE "noarch")
+  set(CPACK_DEBIAN_XRT_PACKAGE_ARCHITECTURE "noarch")
+
+  SET(CPACK_GENERATOR "RPM;TGZ;DEB")
   SET(PACKAGE_KIND "RPM")
   # Modify the package name for the xrt runtime and development component
   # Syntax is set(CPACK_<GENERATOR>_<COMPONENT>_PACKAGE_NAME "<name">)
@@ -146,7 +150,7 @@ endif()
 
 SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${XRT_VERSION_RELEASE}.${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}_${CPACK_REL_VER}-${CPACK_ARCH}")
 
-message("-- ${CMAKE_BUILD_TYPE} ${PACKAGE_KIND} package")
+message("-- ${CMAKE_BUILD_TYPE} ${PACKAGE_KIND}:${CPACK_GENERATOR} package")
 
 SET(CPACK_PACKAGE_VENDOR "Xilinx Inc")
 SET(CPACK_PACKAGE_CONTACT "sonal.santan@xilinx.com")
