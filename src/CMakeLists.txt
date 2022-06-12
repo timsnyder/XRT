@@ -55,6 +55,16 @@ set (CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "xrt")
 #set (XRT_DEV_COMPONENT "xrt-dev")
 set (XRT_DEV_COMPONENT "xrt")
 
+if (DEFINED ENV{CONDA_BUILD})
+    # when building for conda package, split anything that requires root permission into a system
+    # component that will get packed into system packages that are included in the conda package and
+    # installed by a post-link script (or asked to be installed as root if conda is being run as a
+    # user install)
+    set (XRT_SYSTEM_COMPONENT "system")
+else()
+    set (XRT_SYSTEM_COMPONENT "xrt")
+endif()
+
 set (XRT_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Version adjusted to 2.11 after u30 branch creation
