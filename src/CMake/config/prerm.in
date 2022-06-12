@@ -44,6 +44,9 @@ fi
 # If we are here XRT is being uninstalled. It is NOT one of upgrade, downgrade or
 # re-install.
 
+echo "XRT prerm running with env:"
+env | sort
+
 # Stop and remove all daemons
 echo "Removing MSD / MPD daemons"
 systemctl stop msd > /dev/null 2>&1

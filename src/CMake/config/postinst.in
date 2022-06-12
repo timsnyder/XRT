@@ -49,6 +49,9 @@ if [ "$msd_active" = "active" ]; then
     systemctl stop msd > /dev/null 2>&1
 fi
 
+echo "XRT postinst running with env:"
+env | sort
+
 
 echo "Unloading old XRT Linux kernel modules"
 rmmod xocl
