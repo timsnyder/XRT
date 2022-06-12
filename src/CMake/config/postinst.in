@@ -34,7 +34,7 @@ rmmodules()
     depmod -A
 }
 
-installdir=/opt/xilinx/xrt
+installdir=@CMAKE_INSTALL_PREFIX@
 systemddir=/etc/systemd/system
 
 msd_active=`systemctl is-active msd`
